@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 from scipy.interpolate import interp1d
-
+from scipy.signal import savgol_filter
 from velocileptors.Utils.spherical_bessel_transform_fftw import SphericalBesselTransform
 
 from velocileptors.EPT.cleft_kexpanded_fftw import KECLEFT
@@ -31,10 +31,10 @@ class RKECLEFT:
         self.cleft.compute_p_k4()
         
         if pnw is None:
-            knw = self.ept.kint
+            knw = self.cleft.kint
             Nfilter =  np.ceil(np.log(7) /  np.log(knw[-1]/knw[-2])) // 2 * 2 + 1 # filter length ~ log span of one oscillation from k = 0.01
             print(Nfilter)
-            pnw = savgol_filter(self.ept.pint, int(Nfilter), 4)
+            pnw = savgol_filter(self.cleft.pint, int(Nfilter), 4)
         else:
             knw, pnw = k, pnw
             
